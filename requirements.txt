@@ -11,5 +11,4 @@ daphne>=4.0.0
 psutil>=5.9.5
 PyQt5>=5.15.9
 sqlparse>=0.5.3
-tzdata>=2025.1
-D3.js>=7.8.5 
+tzdata>=2025.1 
