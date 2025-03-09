@@ -1,0 +1,402 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PacketJanitor - Network Traffic Monitoring{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-darker: #0a0a0a;
+            --bg-light: #1e1e1e;
+            --bg-lighter: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: #3399ff;
+            --accent-dark: #2980d9;
+            --danger: #ff6b6b;
+            --success: #4cd964;
+            --warning: #ffcc00;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-primary);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background-color: var(--bg-darker);
+            border-bottom: 1px solid #333;
+        }
+        
+        .navbar-brand {
+            font-weight: 600;
+            color: var(--accent);
+        }
+        
+        .sidebar {
+            background-color: var(--bg-light);
+            min-height: calc(100vh - 56px);
+            width: 250px;
+            position: fixed;
+            top: 56px;
+            left: 0;
+            padding-top: 1rem;
+            border-right: 1px solid #333;
+            z-index: 100;
+        }
+        
+        .sidebar-link {
+            color: var(--text-primary);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        
+        .sidebar-link:hover {
+            background-color: var(--bg-lighter);
+            color: var(--accent);
+        }
+        
+        .sidebar-link.active {
+            background-color: rgba(51, 153, 255, 0.15);
+            color: var(--accent);
+            border-left: 3px solid var(--accent);
+        }
+        
+        .sidebar-link i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            flex: 1;
+        }
+        
+        .card {
+            background-color: var(--bg-light);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card-header {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid #333;
+            font-weight: 600;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            border-color: var(--accent);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--accent-dark);
+            border-color: var(--accent-dark);
+        }
+        
+        .table {
+            color: var(--text-primary);
+        }
+        
+        .table thead th {
+            border-bottom-color: #333;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        
+        .table td, .table th {
+            border-top-color: #333;
+        }
+        
+        .form-control, .form-select {
+            background-color: var(--bg-lighter);
+            border: 1px solid #444;
+            color: var(--text-primary);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            background-color: var(--bg-lighter);
+            color: var(--text-primary);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 0.25rem rgba(51, 153, 255, 0.25);
+        }
+        
+        .alert-danger {
+            background-color: rgba(255, 107, 107, 0.1);
+            border-color: rgba(255, 107, 107, 0.2);
+            color: var(--danger);
+        }
+        
+        .alert-success {
+            background-color: rgba(76, 217, 100, 0.1);
+            border-color: rgba(76, 217, 100, 0.2);
+            color: var(--success);
+        }
+        
+        .alert-warning {
+            background-color: rgba(255, 204, 0, 0.1);
+            border-color: rgba(255, 204, 0, 0.2);
+            color: var(--warning);
+        }
+        
+        .badge-primary {
+            background-color: var(--accent);
+        }
+        
+        .badge-danger {
+            background-color: var(--danger);
+        }
+        
+        .badge-success {
+            background-color: var(--success);
+        }
+        
+        .badge-warning {
+            background-color: var(--warning);
+            color: #212529;
+        }
+        
+        /* Custom styles for specific components */
+        .health-score {
+            font-size: 3rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .health-excellent {
+            color: #4cd964;
+        }
+        
+        .health-good {
+            color: #34c759;
+        }
+        
+        .health-fair {
+            color: #ffcc00;
+        }
+        
+        .health-concerning {
+            color: #ff9500;
+        }
+        
+        .health-poor {
+            color: #ff6b6b;
+        }
+        
+        .tooltip-inner {
+            background-color: var(--bg-darker);
+            border: 1px solid #444;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: static;
+                min-height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="bi bi-shield-check me-2"></i>PacketJanitor
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="monitoringStatus">
+                            <span class="status-indicator">●</span> Monitoring: <span id="monitoringStatusText">Inactive</span>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i> {{ request.user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Sidebar and Main Content -->
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="{% url 'home' %}" class="sidebar-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+            <a href="{% url 'traffic_summary' %}" class="sidebar-link {% if request.resolver_match.url_name == 'traffic_summary' %}active{% endif %}">
+                <i class="bi bi-graph-up"></i> Traffic Analysis
+            </a>
+            <a href="{% url 'network_health' %}" class="sidebar-link {% if request.resolver_match.url_name == 'network_health' %}active{% endif %}">
+                <i class="bi bi-heart-pulse"></i> Network Health
+            </a>
+            <a href="{% url 'reports_dashboard' %}" class="sidebar-link {% if 'reports' in request.path %}active{% endif %}">
+                <i class="bi bi-file-earmark-text"></i> Reports
+            </a>
+            <a href="{% url 'whitelist_home' %}" class="sidebar-link {% if 'whitelist' in request.path %}active{% endif %}">
+                <i class="bi bi-shield-check"></i> Whitelist
+            </a>
+            
+            <hr class="my-3 border-secondary">
+            
+            <div class="px-3 mb-3">
+                <div class="d-grid gap-2">
+                    <button id="startMonitoringBtn" class="btn btn-success btn-sm">
+                        <i class="bi bi-play-fill"></i> Start Monitoring
+                    </button>
+                    <button id="stopMonitoringBtn" class="btn btn-danger btn-sm" style="display: none;">
+                        <i class="bi bi-stop-fill"></i> Stop Monitoring
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+        
+        // Monitoring status handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const startBtn = document.getElementById('startMonitoringBtn');
+            const stopBtn = document.getElementById('stopMonitoringBtn');
+            const statusText = document.getElementById('monitoringStatusText');
+            const statusIndicator = document.querySelector('.status-indicator');
+            
+            // Check initial monitoring status
+            checkMonitoringStatus();
+            
+            // Set up periodic status check
+            setInterval(checkMonitoringStatus, 5000);
+            
+            // Start monitoring button
+            if (startBtn) {
+                startBtn.addEventListener('click', function() {
+                    fetch('{% url "start_monitoring" %}', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            updateMonitoringUI(true);
+                        }
+                    });
+                });
+            }
+            
+            // Stop monitoring button
+            if (stopBtn) {
+                stopBtn.addEventListener('click', function() {
+                    fetch('{% url "stop_monitoring" %}', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            updateMonitoringUI(false);
+                        }
+                    });
+                });
+            }
+            
+            function checkMonitoringStatus() {
+                fetch('{% url "monitoring_status" %}')
+                .then(response => response.json())
+                .then(data => {
+                    updateMonitoringUI(data.is_running);
+                });
+            }
+            
+            function updateMonitoringUI(isRunning) {
+                if (isRunning) {
+                    startBtn.style.display = 'none';
+                    stopBtn.style.display = 'block';
+                    statusText.textContent = 'Active';
+                    statusIndicator.style.color = '#4cd964';
+                } else {
+                    startBtn.style.display = 'block';
+                    stopBtn.style.display = 'none';
+                    statusText.textContent = 'Inactive';
+                    statusIndicator.style.color = '#ff6b6b';
+                }
+            }
+            
+            // Helper function to get CSRF token
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

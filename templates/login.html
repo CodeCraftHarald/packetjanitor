@@ -1,0 +1,102 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PacketJanitor - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .login-header img {
+            width: 80px;
+            margin-bottom: 1rem;
+        }
+        .login-form .form-control {
+            background-color: #2d2d2d;
+            border: none;
+            color: #e0e0e0;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .login-form .form-control:focus {
+            background-color: #333;
+            box-shadow: 0 0 0 0.25rem rgba(51, 153, 255, 0.25);
+        }
+        .login-btn {
+            background-color: #3399ff;
+            border: none;
+            width: 100%;
+            padding: 0.8rem;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .alert {
+            background-color: #302525;
+            color: #ff6b6b;
+            border: 1px solid #482c2c;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h3>PacketJanitor</h3>
+            <p class="text-muted">Network Traffic Monitoring</p>
+        </div>
+        
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            Your username and password didn't match. Please try again.
+        </div>
+        {% endif %}
+        
+        <form method="post" action="{% url 'login' %}" class="login-form">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="id_username" class="form-label">Username</label>
+                <input type="text" name="username" id="id_username" class="form-control" required autofocus>
+            </div>
+            <div class="mb-3">
+                <label for="id_password" class="form-label">Password</label>
+                <input type="password" name="password" id="id_password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary login-btn">Sign In</button>
+            <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        
+        <div class="login-footer">
+            <p>Please enter your credentials to access the dashboard</p>
+            <p>PacketJanitor &copy; {% now "Y" %}</p>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

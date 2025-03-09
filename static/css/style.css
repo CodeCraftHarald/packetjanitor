@@ -1,0 +1,161 @@
+/* Custom styles for PacketJanitor */
+
+/* Dashboard specific styles */
+.dashboard-stat {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+/* Network health indicators */
+.health-indicator {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.health-excellent {
+    background-color: rgba(76, 217, 100, 0.1);
+    color: #4cd964;
+    border: 2px solid rgba(76, 217, 100, 0.3);
+}
+
+.health-good {
+    background-color: rgba(52, 199, 89, 0.1);
+    color: #34c759;
+    border: 2px solid rgba(52, 199, 89, 0.3);
+}
+
+.health-fair {
+    background-color: rgba(255, 204, 0, 0.1);
+    color: #ffcc00;
+    border: 2px solid rgba(255, 204, 0, 0.3);
+}
+
+.health-concerning {
+    background-color: rgba(255, 149, 0, 0.1);
+    color: #ff9500;
+    border: 2px solid rgba(255, 149, 0, 0.3);
+}
+
+.health-poor {
+    background-color: rgba(255, 107, 107, 0.1);
+    color: #ff6b6b;
+    border: 2px solid rgba(255, 107, 107, 0.3);
+}
+
+/* Packet details */
+.packet-details {
+    font-family: monospace;
+    font-size: 0.9rem;
+    background-color: var(--bg-darker);
+    padding: 1rem;
+    border-radius: 4px;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* Whitelist items */
+.whitelist-item {
+    background-color: var(--bg-lighter);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s;
+}
+
+.whitelist-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.whitelist-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.whitelist-item-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.whitelist-item-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Educational tooltips */
+.educational-tooltip {
+    cursor: help;
+    border-bottom: 1px dashed var(--text-secondary);
+}
+
+/* Report cards */
+.report-card {
+    height: 100%;
+    transition: all 0.2s;
+}
+
+.report-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.report-card-header {
+    background-color: rgba(51, 153, 255, 0.1);
+    border-bottom: 1px solid rgba(51, 153, 255, 0.2);
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+/* Status indicators */
+.status-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-active {
+    background-color: var(--success);
+    box-shadow: 0 0 5px var(--success);
+}
+
+.status-inactive {
+    background-color: var(--danger);
+}
+
+.status-warning {
+    background-color: var(--warning);
+} 
